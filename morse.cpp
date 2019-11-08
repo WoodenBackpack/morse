@@ -3,36 +3,63 @@
 
 #include "morse.h"
 
-morse::morse() : mFreq(2000), mPauseTime(20), mDotTime(50), mDashTime(200), 
-  mCharPauseTime(20), mBeeper(new beeper()), dot('.'), dash('-') {
+morse::morse() : mFreq(2000), mPauseTime(20), mDotTime(50), mDashTime(200),
+                 mCharPauseTime(20), mBeeper(new beeper())
+{
 }
-morse::~morse() {
+morse::~morse()
+{
     delete mBeeper;
 }
-void morse::setFrequency(const DWORD &freq) {
+void morse::setFrequency(const DWORD &freq)
+{
     mFreq = freq;
 }
-void morse::setPause(const DWORD &pauseTime) {
+void morse::setPause(const DWORD &pauseTime)
+{
     mPauseTime = pauseTime;
 }
-void morse::setDotTime(const DWORD &dotTime) {
+void morse::setDotTime(const DWORD &dotTime)
+{
     mDotTime = dotTime;
 }
-void morse::setDashTime(const DWORD &dashTime) {
+void morse::setDashTime(const DWORD &dashTime)
+{
     mDashTime = dashTime;
 }
-void morse::setCharPause(const DWORD &charPauseTime) {
+void morse::setCharPause(const DWORD &charPauseTime)
+{
     mCharPauseTime = charPauseTime;
 }
-void morse::operator<<(const long sign) {
-    const std::string str = std::to_string(sign); 
-    for (int i = 0; i < str.length(); ++i) {
-        if (strcmp(&str.at(i), &dot) == 0) {
-            mBeeper->beepDot(mFreq, mDotTime);
-        } else if (strcmp(&str.at(i), &dash) == 0) {
-            mBeeper->beepDash(mFreq, mDashTime);
+
+#include <iostream>
+void morse::operator<<(const long sign)
+{
+    std::string str = std::to_string(sign);
+    for (int i = 0; i < str.length(); ++i)
+    {
+        char c = str.at(i);
+        std::string converted = convertToMorse(c);
+        std::cout << converted << "\n";
+        for (unsigned int j = 0; j < converted.length(); ++j)
+        {
+            char character = converted.at(j);
+            if (character == dot)
+            {
+                mBeeper->beepDot(mFreq, mDotTime);
+                std::cout << "beepDot\n";
+            }
+            else if (character == dash)
+            {
+                mBeeper->beepDash(mFreq, mDashTime);
+                std::cout << "beepDash\n";
+            }
+            else
+            {
+                std::cout << "nope!\n";
+            }
+            mBeeper->sleep(mCharPauseTime);
         }
-        mBeeper->sleep(mCharPauseTime);
     }
 }
 
@@ -42,64 +69,91 @@ void morse::operator<<(const double sign)
 void morse::operator<<(const char sign)
 {
 }
-void morse::operator<<(const char* string)
+void morse::operator<<(const char *string)
 {
 }
 
-std::string morse::convertToMorse(char menu) {
-    switch( menu )
+std::string morse::convertToMorse(char menu)
+{
+    switch (menu)
     {
-    case 'a': case 'A':
+    case 'a':
+    case 'A':
         return "._";
-    case 'b': case 'B':
+    case 'b':
+    case 'B':
         return "_...";
-    case 'c': case 'C':
+    case 'c':
+    case 'C':
         return "_._.";
-    case 'd': case 'D':
+    case 'd':
+    case 'D':
         return "_..";
-    case 'e': case 'E':
+    case 'e':
+    case 'E':
         return ".";
-    case 'f': case 'F':
+    case 'f':
+    case 'F':
         return ".._.";
-    case 'g': case 'G':
+    case 'g':
+    case 'G':
         return "__.";
-    case 'h': case 'H':
+    case 'h':
+    case 'H':
         return "....";
-    case 'i': case 'I':
+    case 'i':
+    case 'I':
         return "..";
-    case 'j': case 'J':
+    case 'j':
+    case 'J':
         return ".___";
-    case 'k': case 'K':
+    case 'k':
+    case 'K':
         return "_._";
-    case 'l': case 'L':
+    case 'l':
+    case 'L':
         return "._..";
-    case 'm': case 'M':
+    case 'm':
+    case 'M':
         return "__";
-    case 'n': case 'N':
+    case 'n':
+    case 'N':
         return "_.";
-    case 'o': case 'O':
+    case 'o':
+    case 'O':
         return "___";
-    case 'p': case 'P':
+    case 'p':
+    case 'P':
         return ".__.";
-    case 'q': case 'Q':
+    case 'q':
+    case 'Q':
         return "__._";
-    case 'r': case 'R':
+    case 'r':
+    case 'R':
         return "._.";
-    case 's': case 'S':
+    case 's':
+    case 'S':
         return "...";
-    case 't': case 'T':
+    case 't':
+    case 'T':
         return "_";
-    case 'u': case 'U':
+    case 'u':
+    case 'U':
         return ".._";
-    case 'v': case 'V':
+    case 'v':
+    case 'V':
         return "..._";
-    case 'w': case 'W':
+    case 'w':
+    case 'W':
         return ".__";
-    case 'x': case 'X':
+    case 'x':
+    case 'X':
         return "_.._";
-    case 'y': case 'Y':
+    case 'y':
+    case 'Y':
         return "_.__";
-    case 'z': case 'Z':
+    case 'z':
+    case 'Z':
         return "__..";
     case '1':
         return ".____";
@@ -121,13 +175,13 @@ std::string morse::convertToMorse(char menu) {
         return "____.";
     case '0':
         return "_____";
-	case '.':
+    case '.':
         return "._._._";
-	 case ',':
+    case ',':
         return "__..__";
-	 case '?':
+    case '?':
         return "..__..";
- 	case '!':
+    case '!':
         return "_._.__";
     }
     return "";

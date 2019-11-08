@@ -6,7 +6,7 @@
 int main()
 {
 	//Beep(10000, 500000);
-	/*
+	
 	morse m;
 	m.setFrequency(1000);       //ustawienie czestotliwosci dzwieku czyli pierwszy argument Beep()
 	m.setPause(50); //Pauza miedzy slowami czas jej trwania czyli drugi argument Beep()
@@ -17,22 +17,10 @@ int main()
 	long i = 0x5A5A5A5A;
 	double d = 1.23456789;
 	m << i;// << pause << d; //pause jest rowne charpause, jezeli chodzi o slowo pause jest technika, ktora pozwala na wstawianie danego slowa do strumienia
-    */
-   // std::cin.get(); // wait 
-//	return 0;
+   
+    std::cin.get(); // wait 
+	return 0;
 
-	
-    Beep(1568, 200);
-    Beep(1568, 200);
-    Beep(1568, 200);
-    Beep(1245, 1000);
-    Beep(1397, 200);
-    Beep(1397, 200);
-    Beep(1397, 200);
-    Beep(1175, 1000);
-
-std::cout<<std::endl;
-_getch();
 
 return 0;
 

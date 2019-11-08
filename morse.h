@@ -25,6 +25,6 @@ private:
   DWORD mCharPauseTime;
   beeper* mBeeper;
 
-  const char dot;
-  const char dash;
+  const char dot = '.';
+  const char dash = '_';
 };
