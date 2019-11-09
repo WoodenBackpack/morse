@@ -7,70 +7,89 @@ morse::morse() : mFreq(2000), mPauseTime(20), mDotTime(50), mDashTime(200),
                  mCharPauseTime(20), mBeeper(new beeper())
 {
 }
-morse::~morse()
-{
+morse::~morse() {
     delete mBeeper;
 }
-void morse::setFrequency(const DWORD &freq)
-{
+void morse::setFrequency(const DWORD &freq) {
     mFreq = freq;
 }
-void morse::setPause(const DWORD &pauseTime)
-{
+void morse::setPause(const DWORD &pauseTime) {
     mPauseTime = pauseTime;
 }
-void morse::setDotTime(const DWORD &dotTime)
-{
+void morse::setDotTime(const DWORD &dotTime) {
     mDotTime = dotTime;
 }
-void morse::setDashTime(const DWORD &dashTime)
-{
+void morse::setDashTime(const DWORD &dashTime) {
     mDashTime = dashTime;
 }
-void morse::setCharPause(const DWORD &charPauseTime)
-{
+void morse::setCharPause(const DWORD &charPauseTime) {
     mCharPauseTime = charPauseTime;
 }
 
+// void morse::operator<<(const long sign) {
+//     std::string str = std::to_string(sign);
+//     beepWord(str);
+// }
+
+// void morse::operator<<(const double sign) {
+//     std::string str = std::to_string(sign);
+//     beepWord(str);
+// }
+// void morse::operator<<(const char sign) {
+//     std::string str = std::to_string(sign);
+//     beepWord(str);
+// }
+
+// void morse::operator<<(const char *string) {
+//     std::string str(string);
+//     beepWord(str);
+// }
+
 #include <iostream>
-void morse::operator<<(const long sign)
-{
-    std::string str = std::to_string(sign);
-    for (int i = 0; i < str.length(); ++i)
-    {
-        char c = str.at(i);
-        std::string converted = convertToMorse(c);
-        std::cout << converted << "\n";
-        for (unsigned int j = 0; j < converted.length(); ++j)
-        {
-            char character = converted.at(j);
-            if (character == dot)
-            {
-                mBeeper->beepDot(mFreq, mDotTime);
-                std::cout << "beepDot\n";
-            }
-            else if (character == dash)
-            {
-                mBeeper->beepDash(mFreq, mDashTime);
-                std::cout << "beepDash\n";
-            }
-            else
-            {
-                std::cout << "nope!\n";
-            }
+void morse::beepWord(const std::string& word) {
+    for (int i = 0; i < word.length(); ++i) {
+        char c = word.at(i);
+        if (c == space) {
+            std::cout<<" space_Pause";
             mBeeper->sleep(mCharPauseTime);
+            std::cout<<" space_CharPause";
+            mBeeper->sleep(mPauseTime);
+            std::cout<<"\n";
+            continue;
         }
+        std::string converted = convertToMorse(c);
+        for (unsigned int j = 0; j < converted.length(); ++j) {
+            char character = converted.at(j);
+            if (character == dot) {
+                std::cout<<" dot";
+                mBeeper->beep(mFreq, mDotTime);
+            } else if (character == dash) {
+                std::cout<<" dash";
+                mBeeper->beep(mFreq, mDashTime);
+            }
+        }
+        std::cout<<" charPause\n";
+        mBeeper->sleep(mCharPauseTime);
     }
 }
 
-void morse::operator<<(const double sign)
-{
+template <class T>
+morse& morse::operator<<(const T& paramStr) {
+    std::ostringstream ss;
+    ss << paramStr;
+    beepWord(ss.str());
+    return *this;
 }
-void morse::operator<<(const char sign)
-{
+
+morse& morse::operator<<(morse& (*pause)(morse &)) {
+	Sleep(mCharPauseTime);
+    std::cout<<"pause\n";
+	return *this;
 }
-void morse::operator<<(const char *string)
-{
+
+// Manipulator is not a memeber of morse
+morse& pause(morse& m) {
+	return m;
 }
 
 std::string morse::convertToMorse(char menu)
@@ -184,5 +203,4 @@ std::string morse::convertToMorse(char menu)
     case '!':
         return "_._.__";
     }
-    return "";
 }
