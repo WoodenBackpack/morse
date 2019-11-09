@@ -17,12 +17,16 @@ public:
   // void operator<<(const char);
   // void operator<<(const char*);
 
-
   template <class T>
-  morse& operator<<(const T& paramStr);
+  morse& operator<<(const T& paramStr) {
+    std::ostringstream ss;
+    ss << paramStr;
+    beepWord(ss.str());
+    return *this;
+  }
 
-  morse& operator<<(morse &(*pause)(morse &));
-  
+  morse& operator<<(morse& (*pause)(morse &));
+
 private:
   std::string convertToMorse(char menu);
   void beepWord(const std::string& word);

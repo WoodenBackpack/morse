@@ -1,11 +1,12 @@
 #include <windows.h>
 #include <string>
+#include <sstream>
 
 #include "morse.h"
 
 morse::morse() : mFreq(2000), mPauseTime(20), mDotTime(50), mDashTime(200),
-                 mCharPauseTime(20), mBeeper(new beeper())
-{
+                 mCharPauseTime(20) {
+    mBeeper = new beeper();
 }
 morse::~morse() {
     delete mBeeper;
@@ -45,45 +46,29 @@ void morse::setCharPause(const DWORD &charPauseTime) {
 //     beepWord(str);
 // }
 
-#include <iostream>
 void morse::beepWord(const std::string& word) {
     for (int i = 0; i < word.length(); ++i) {
         char c = word.at(i);
         if (c == space) {
-            std::cout<<" space_Pause";
-            mBeeper->sleep(mCharPauseTime);
-            std::cout<<" space_CharPause";
             mBeeper->sleep(mPauseTime);
-            std::cout<<"\n";
+            mBeeper->sleep(mCharPauseTime);
             continue;
         }
         std::string converted = convertToMorse(c);
         for (unsigned int j = 0; j < converted.length(); ++j) {
             char character = converted.at(j);
             if (character == dot) {
-                std::cout<<" dot";
                 mBeeper->beep(mFreq, mDotTime);
             } else if (character == dash) {
-                std::cout<<" dash";
                 mBeeper->beep(mFreq, mDashTime);
             }
         }
-        std::cout<<" charPause\n";
         mBeeper->sleep(mCharPauseTime);
     }
 }
 
-template <class T>
-morse& morse::operator<<(const T& paramStr) {
-    std::ostringstream ss;
-    ss << paramStr;
-    beepWord(ss.str());
-    return *this;
-}
-
 morse& morse::operator<<(morse& (*pause)(morse &)) {
-	Sleep(mCharPauseTime);
-    std::cout<<"pause\n";
+	mBeeper->sleep(mCharPauseTime);
 	return *this;
 }
 
@@ -202,5 +187,7 @@ std::string morse::convertToMorse(char menu)
         return "..__..";
     case '!':
         return "_._.__";
+    default:
+        return "";
     }
 }
